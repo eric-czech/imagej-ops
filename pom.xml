@@ -194,6 +194,9 @@
 
 		<!-- NB: Deploy releases to the ImageJ Maven repository. -->
 		<releaseProfiles>deploy-to-imagej</releaseProfiles>
+
+		<imagej-mesh.version>0.4.0-SNAPSHOT</imagej-mesh.version>
+		<enforcer.skip>true</enforcer.skip>
 	</properties>
 
 	<repositories>
@@ -208,6 +211,10 @@
 		<dependency>
 			<groupId>net.imagej</groupId>
 			<artifactId>imagej-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>imagej-mesh</artifactId>
 		</dependency>
 
 		<!-- ImgLib2 dependencies -->

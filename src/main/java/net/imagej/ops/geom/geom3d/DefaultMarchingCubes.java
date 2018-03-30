@@ -29,13 +29,11 @@
 
 package net.imagej.ops.geom.geom3d;
 
+import net.imagej.mesh.Mesh;
+import net.imagej.mesh.naive.NaiveMesh;
 import net.imagej.ops.Contingent;
 import net.imagej.ops.Ops;
-import net.imagej.ops.geom.geom3d.mesh.DefaultMesh;
 import net.imagej.ops.geom.geom3d.mesh.DefaultVertexInterpolator;
-import net.imagej.ops.geom.geom3d.mesh.Mesh;
-import net.imagej.ops.geom.geom3d.mesh.TriangularFacet;
-import net.imagej.ops.geom.geom3d.mesh.Vertex;
 import net.imagej.ops.geom.geom3d.mesh.VertexInterpolator;
 import net.imagej.ops.special.function.AbstractUnaryFunctionOp;
 import net.imglib2.Cursor;
@@ -73,8 +71,8 @@ public class DefaultMarchingCubes<T extends BooleanType<T>> extends
 
 	@SuppressWarnings({ "unchecked" })
 	@Override
-	public DefaultMesh calculate(final RandomAccessibleInterval<T> input) {
-		DefaultMesh output = new DefaultMesh();
+	public Mesh calculate(final RandomAccessibleInterval<T> input) {
+		Mesh output = new NaiveMesh();
 		ExtendedRandomAccessibleInterval<T, RandomAccessibleInterval<T>> extended =
 			Views.extendValue(input, (T) new BoolType(false));
 		Cursor<T> c = Views.interval(extended, new FinalInterval(new long[] { input
@@ -172,19 +170,16 @@ public class DefaultMarchingCubes<T extends BooleanType<T>> extends
 
 				/* Create the triangle */
 				for (i = 0; TRIANGLE_TABLE[cubeindex][i] != -1; i += 3) {
-
-					TriangularFacet face = new TriangularFacet(new Vertex(
+					output.triangles().add(
 						vertlist[TRIANGLE_TABLE[cubeindex][i + 2]][0],
 						vertlist[TRIANGLE_TABLE[cubeindex][i + 2]][1],
-						vertlist[TRIANGLE_TABLE[cubeindex][i + 2]][2]), new Vertex(
-							vertlist[TRIANGLE_TABLE[cubeindex][i + 1]][0],
-							vertlist[TRIANGLE_TABLE[cubeindex][i + 1]][1],
-							vertlist[TRIANGLE_TABLE[cubeindex][i + 1]][2]), new Vertex(
-								vertlist[TRIANGLE_TABLE[cubeindex][i]][0],
-								vertlist[TRIANGLE_TABLE[cubeindex][i]][1],
-								vertlist[TRIANGLE_TABLE[cubeindex][i]][2]));
-					face.getArea();
-					output.addFace(face);
+						vertlist[TRIANGLE_TABLE[cubeindex][i + 2]][2],
+						vertlist[TRIANGLE_TABLE[cubeindex][i + 1]][0],
+						vertlist[TRIANGLE_TABLE[cubeindex][i + 1]][1],
+						vertlist[TRIANGLE_TABLE[cubeindex][i + 1]][2],
+						vertlist[TRIANGLE_TABLE[cubeindex][i]][0],
+						vertlist[TRIANGLE_TABLE[cubeindex][i]][1],
+						vertlist[TRIANGLE_TABLE[cubeindex][i]][2]);
 				}
 			}
 		}
